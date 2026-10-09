@@ -1,0 +1,430 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>League hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EEF1EC; --panel:#FFFFFF; --ink:#18263A; --muted:#5B6878; --rule:#D5DBD3;
+  --pos:#2E7250; --neg:#B23A48; --gold:#A67A06; --track:#E2E7E0; --chip:#E8EDE6; --sel:#18263A; --selink:#FFFFFF;
+  --display:"Barlow Condensed","Arial Narrow","Roboto Condensed",sans-serif;
+  --body:"Barlow","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#101A26; --panel:#172333; --ink:#E8EDF2; --muted:#9AA8B8; --rule:#2A384A;
+    --pos:#5BBF8A; --neg:#E2707E; --gold:#E0B04A; --track:#233246; --chip:#223044; --sel:#E8EDF2; --selink:#101A26;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#101A26; --panel:#172333; --ink:#E8EDF2; --muted:#9AA8B8; --rule:#2A384A;
+  --pos:#5BBF8A; --neg:#E2707E; --gold:#E0B04A; --track:#233246; --chip:#223044; --sel:#E8EDF2; --selink:#101A26;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.45;font-variant-numeric:tabular-nums}
+main{max-width:760px;margin:0 auto;padding:28px 16px 64px}
+header h1{font-family:var(--display);font-weight:800;font-size:clamp(2.2rem,8vw,3.4rem);line-height:.95;margin:0 0 10px;letter-spacing:-.01em}
+header p{margin:0;color:var(--muted);max-width:60ch}
+nav{position:sticky;top:0;z-index:5;background:var(--bg);margin:20px -16px 0;padding:10px 16px;overflow-x:auto;white-space:nowrap;border-bottom:1px solid var(--rule)}
+nav button{font:600 1.05rem var(--display);letter-spacing:.01em;color:var(--muted);background:none;border:0;padding:6px 12px;border-radius:999px;cursor:pointer}
+nav button[aria-selected="true"]{background:var(--sel);color:var(--selink)}
+nav button:focus-visible,button:focus-visible,summary:focus-visible,select:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+section[hidden]{display:none}
+h2{font-family:var(--display);font-weight:700;font-size:1.75rem;margin:30px 0 4px}
+h3{font-family:var(--display);font-weight:700;font-size:1.3rem;margin:26px 0 8px}
+.lede{color:var(--muted);margin:0 0 16px;max-width:62ch}
+.panel{background:var(--panel);border:1px solid var(--rule);border-radius:10px;overflow:hidden}
+details.row{border-top:1px solid var(--rule)}
+details.row:first-child{border-top:0}
+summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:2.2rem 1fr auto;gap:10px;align-items:center;padding:12px 14px}
+summary::-webkit-details-marker{display:none}
+.rk{font-family:var(--display);font-weight:800;font-size:1.9rem;line-height:1;text-align:center}
+.tn{font-weight:600;line-height:1.2}
+.ow{color:var(--muted);font-size:.85rem}
+.rt{font-family:var(--display);font-weight:700;font-size:1.5rem;text-align:right;min-width:4.2rem}
+.rt small{display:block;font-family:var(--body);font-weight:500;font-size:.72rem;color:var(--muted);margin-top:-2px}
+.bar{height:8px;position:relative;background:var(--track);border-radius:4px}
+summary .bar,summary .stats{grid-column:2 / 4}
+.bar i{position:absolute;top:0;bottom:0;border-radius:4px}
+.bar b{position:absolute;left:50%;top:-3px;bottom:-3px;width:2px;background:var(--muted);opacity:.6}
+.bar.fill b{display:none}
+.stats{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.84rem;color:var(--muted)}
+.stats strong{color:var(--ink);font-weight:600}
+.detail{padding:4px 14px 16px calc(2.2rem + 24px)}
+.detail h4{font-size:.9rem;font-weight:600;margin:10px 0 6px}
+.pos{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.pos div{background:var(--chip);border-radius:6px;padding:5px 2px;text-align:center;font-size:.78rem}
+.pos span{display:block;font-weight:600;font-size:.9rem}
+.core{margin:0;padding:0;list-style:none;columns:2;column-gap:16px;font-size:.84rem}
+.core li{break-inside:avoid;display:flex;justify-content:space-between;gap:6px;padding:2px 0;border-bottom:1px dotted var(--rule)}
+.core em{font-style:normal;color:var(--muted);width:2.6rem;flex:none}
+.core li span:first-of-type{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.list{padding:4px 14px}
+.lrow{display:grid;grid-template-columns:minmax(0,1fr) 38% 3.6rem;gap:10px;align-items:center;padding:10px 0;border-top:1px solid var(--rule);font-size:.9rem}
+.lrow:first-child{border-top:0}
+.lrow .t{min-width:0}
+.lrow .t b{display:block;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lrow .t span{color:var(--muted);font-size:.8rem}
+.lrow .v{text-align:right;font-family:var(--display);font-weight:700;font-size:1.2rem}
+.scroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:.88rem}
+th,td{padding:8px 10px;text-align:left;border-top:1px solid var(--rule)}
+thead th{border-top:0;font-weight:600;color:var(--muted);font-size:.8rem}
+td.num,th.num{text-align:right}
+.wp{display:flex;align-items:center;gap:8px;justify-content:flex-end}
+.wp i{display:block;width:54px;height:6px;border-radius:3px;background:var(--track);position:relative;overflow:hidden}
+.wp i::after{content:"";position:absolute;inset:0 auto 0 0;width:var(--w);background:var(--c)}
+select{font:inherit;color:var(--ink);background:var(--panel);border:1px solid var(--rule);border-radius:8px;padding:8px 10px;max-width:100%}
+.pickwrap{display:flex;gap:10px;align-items:center;margin-bottom:12px;flex-wrap:wrap}
+/* bracket */
+.bracket{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;min-width:560px;padding:14px}
+.round h4{font:600 .85rem var(--body);color:var(--muted);margin:0 0 8px}
+.round{display:flex;flex-direction:column;justify-content:space-around;gap:14px}
+.game{border:1px solid var(--rule);border-radius:8px;overflow:hidden;background:var(--bg)}
+.slot{display:grid;grid-template-columns:1.4rem 1fr auto;gap:6px;padding:7px 9px;font-size:.84rem;align-items:center}
+.slot+.slot{border-top:1px solid var(--rule)}
+.slot .sd{font-family:var(--display);font-weight:800;color:var(--muted)}
+.slot .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
+.slot .pc{color:var(--muted);font-size:.78rem}
+.slot.tbd .nm{font-weight:400;color:var(--muted)}
+.heat{border-collapse:separate;border-spacing:2px;font-size:.78rem;min-width:520px}
+.heat th,.heat td{border:0;padding:5px 4px;text-align:center}
+.heat td{border-radius:4px}
+.heat th:first-child,.heat td:first-child{text-align:left;white-space:nowrap;max-width:9rem;overflow:hidden;text-overflow:ellipsis}
+.game-pick{padding:12px 14px;border-top:1px solid var(--rule)}
+.game-pick:first-child{border-top:0}
+.game-pick .meta{font-size:.8rem;color:var(--muted);margin-bottom:8px}
+.sides{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.side{font:inherit;text-align:left;color:var(--ink);background:var(--chip);border:1.5px solid transparent;border-radius:8px;padding:9px 10px;cursor:pointer;min-width:0}
+.side b{display:block;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:.9rem}
+.side span{font-family:var(--display);font-weight:700;font-size:1.15rem}
+.side[aria-pressed="true"]{background:var(--sel);color:var(--selink)}
+.actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:14px}
+.btn{font:600 1rem var(--body);color:var(--selink);background:var(--sel);border:0;border-radius:8px;padding:10px 16px;cursor:pointer}
+.btn[disabled]{opacity:.45;cursor:default}
+.note{font-size:.85rem;color:var(--muted)}
+.btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--rule)}
+input{font:inherit;color:var(--ink);background:var(--panel);border:1px solid var(--rule);border-radius:8px;padding:8px 10px;width:7.5rem}
+input:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;padding:12px 14px}
+.group{margin:26px 0 10px}
+.group h3{font-family:var(--display);font-weight:800;font-size:1.6rem;letter-spacing:.01em;margin:0}
+.group p{margin:2px 0 0;color:var(--muted);font-size:.86rem}
+.card{background:var(--panel);border:1px solid var(--rule);border-radius:12px;padding:18px 16px 20px;margin:12px 0}
+.card h4{margin:0;font-family:var(--display);font-weight:700;font-size:1.55rem;line-height:1.05}
+.card .who{color:var(--muted);font-size:.85rem;margin:4px 0 14px}
+.kpi{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:0 0 16px}
+.kpi div{background:var(--chip);border-radius:10px;padding:10px 12px}
+.kpi small{display:block;color:var(--muted);font-size:.74rem;letter-spacing:.03em;text-transform:uppercase;margin-bottom:3px}
+.kpi b{display:block;font-family:var(--display);font-weight:700;font-size:1.5rem;line-height:1.1}
+.sub{font-size:.76rem;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin:0 0 7px}
+.card p.read{margin:16px 0 0;font-size:.95rem;line-height:1.55}
+@media (min-width:560px){.kpi{grid-template-columns:repeat(4,1fr)}}
+
+.chip{font-size:.82rem;padding:4px 10px;border-radius:999px;background:var(--chip);color:var(--muted)}
+.chip.in{background:var(--sel);color:var(--selink)}
+.grid td.hit{color:var(--pos);font-weight:600}.grid td.miss{color:var(--neg)}.grid td{white-space:nowrap}
+textarea{width:100%;min-height:150px;margin-top:10px;font:.85rem/1.4 var(--body);color:var(--ink);background:var(--panel);border:1px solid var(--rule);border-radius:8px;padding:10px}
+.empty{padding:18px 14px;color:var(--muted);font-size:.9rem}
+.award{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:6px}
+.award div{background:var(--panel);border:1px solid var(--rule);border-radius:10px;padding:10px 12px}
+.award small{display:block;color:var(--muted);font-size:.78rem}
+.award b{display:block;font-weight:600;line-height:1.2;margin:2px 0}
+.award span{font-family:var(--display);font-weight:700;font-size:1.25rem}
+.method{margin-top:44px;font-size:.9rem;color:var(--muted);max-width:64ch}
+.method p{margin:0 0 10px}
+.up{color:var(--pos)} .dn{color:var(--neg)}
+@media (max-width:480px){.detail{padding-left:14px}.core{columns:1}.lrow{grid-template-columns:minmax(0,1fr) 30% 3.2rem}.award{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<main>
+<header>
+<h1 id="title">League hub</h1>
+<p id="sub"></p>
+</header>
+<nav role="tablist" aria-label="Sections">
+  <button role="tab" data-tab="rank" aria-selected="true">Rankings</button>
+  <button role="tab" data-tab="profiles" aria-selected="false">Teams</button>
+  <button role="tab" data-tab="bracket" aria-selected="false">Playoffs</button>
+  <button role="tab" data-tab="luck" aria-selected="false">Luck</button>
+  <button role="tab" data-tab="eff" aria-selected="false">Lineups</button>
+  <button role="tab" data-tab="sched" aria-selected="false">Schedule</button>
+</nav>
+
+<section id="rank" role="tabpanel">
+  <h2>Power ranking</h2>
+  <p class="lede">Rating is projected points per week above or below the league average of <strong id="avg"></strong>. Tap a team for positional edges and its projected lineup.</p>
+  <div class="panel" id="board"></div>
+</section>
+
+<section id="profiles" role="tabpanel" hidden>
+  <h2>Team profiles</h2>
+  <p class="lede">Where each roster actually stands: projected finish, the assets it's built on, and whether the right move is to push, hold or tear it down. Rebuilt every morning from current rosters and results.</p>
+  <div id="profileList"></div>
+</section>
+
+<section id="bracket" role="tabpanel" hidden>
+  <h2>Projected playoff bracket</h2>
+  <p class="lede">Seeds by average finish across 20,000 simulated seasons. Top 6 make it, seeds 1 and 2 get byes. Percentages are each team's chance to win that projected game.</p>
+  <div class="panel scroll"><div class="bracket" id="br"></div></div>
+  <h3>Title odds</h3>
+  <div class="panel list" id="champ"></div>
+  <h3>Seed chances</h3>
+  <p class="lede">How often each team finished in each seed. Seeds 7–10 miss the playoffs.</p>
+  <div class="panel scroll" style="padding:8px"><table class="heat" id="heat"></table></div>
+</section>
+
+<section id="luck" role="tabpanel" hidden>
+  <h2>Luck index</h2>
+  <p class="lede">All-play record is how a team would do against every other team each week. Luck is actual wins minus the wins that all-play rate would earn. Positive means the schedule has been kind.</p>
+  <div class="panel list" id="luckList"></div>
+</section>
+
+<section id="eff" role="tabpanel" hidden>
+  <h2>Manager efficiency</h2>
+  <p class="lede">Points actually started as a share of the best possible lineup from the same roster. Taxi and IR players aren't counted.</p>
+  <div class="award" id="awards"></div>
+  <div class="panel list" id="effList"></div>
+</section>
+
+<section id="sched" role="tabpanel" hidden>
+  <h2>Rest-of-season strength of schedule</h2>
+  <p class="lede">Each opponent is valued at the <strong>best lineup they can start in a normal week</strong> — nobody's bye drags their number down, since you never face a team on its bye anyway. Players on IR, PUP or suspension still count against them. Bars show the gap from the league-average slate.</p>
+  <div class="panel list" id="sos"></div>
+  <h3>Weekly outlook</h3>
+  <div class="pickwrap"><label for="pickT">Team</label><select id="pickT"></select></div>
+  <div class="panel scroll"><table style="min-width:420px"><thead><tr><th>Wk</th><th>Opponent</th><th class="num">Proj</th><th class="num">Opp</th><th class="num">Win chance</th></tr></thead><tbody id="rows"></tbody></table></div>
+</section>
+
+<section class="method">
+<h2>How it's built</h2>
+<p>Player projections come from Sleeper's weekly feed, rescored with this league's rules (6-point passing TDs, full PPR, custom kicker and defense scoring). Each week the model starts the highest-projected legal lineup from active roster players; taxi and IR spots are excluded and players on bye score zero.</p>
+<p>Availability is applied on top of those projections, refreshed every morning. A player on injured reserve, PUP, the non-football injury list or suspension — whatever keeps him off the field — is a zero for the next four weeks and is discounted by half after that, because a return date is a guess. For the coming week only, Out counts as zero, Doubtful as 40% and Questionable as 90%. Everyone's current absences show up under their team in the rankings.</p>
+<p>Power score blends the rest-of-season rating with what teams have actually scored. Results now carry real weight: 50% by week 5 and about 70% by week 10, with recent weeks counting for more than September. Strength of schedule uses full-strength lineups, as described above, while the weekly win chances use each team's actual projection for that week, byes and all. Win chances assume each team's weekly score varies by about 30 points around its projection. Playoff seeding uses wins, then points for, and the bracket runs 4 vs 5 and 3 vs 6 in week 15, with the winners facing seeds 1 and 2 in week 16 and the final in week 17.</p>
+<p>Data refreshes every morning from Sleeper. Later-week projections are rougher and don't know about future injuries or trades.</p>
+</section>
+</main>
+<script>
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const sg=(v,d=1)=>(v>0?"+":v<0?"−":"")+Math.abs(v).toFixed(d);
+const erf=x=>{const s=Math.sign(x);x=Math.abs(x);const a=1/(1+0.3275911*x);return s*(1-(((((1.061405429*a-1.453152027)*a)+1.421413741)*a-0.284496736)*a+0.254829592)*a*Math.exp(-x*x));};
+const wpc=(a,b)=>0.5*(1+erf((a-b)/60));
+const store={get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const divBar=(v,max,goodPos=true)=>{const pct=max?Math.abs(v)/max*50:0,left=v>=0?50:50-pct;const c=(v>=0)===goodPos?'var(--pos)':'var(--neg)';return {html:`<span class="bar" aria-hidden="true"><b></b><i style="left:${left}%;width:${pct}%;background:${c}"></i></span>`,c}};
+const $=id=>document.getElementById(id);
+
+// tabs
+const tabs=[...document.querySelectorAll('nav button')];
+function show(id){tabs.forEach(b=>{const on=b.dataset.tab===id;b.setAttribute('aria-selected',on);$(b.dataset.tab).hidden=!on});store.set('hubtab',id)}
+tabs.forEach(b=>b.addEventListener('click',()=>show(b.dataset.tab)));
+const saved=store.get('hubtab'); if(saved&&$(saved)) show(saved);
+
+fetch('data.json?v='+Date.now()).then(r=>{if(!r.ok) throw new Error(r.status);return r.json()}).then(init).catch(e=>{
+  $('sub').textContent='League data hasn\'t been built yet. Run the "Update league data" workflow in GitHub Actions, then reload.';
+});
+
+function init(DATA){
+const T=DATA.teams, byId={}; T.forEach(t=>byId[t.rid]=t);
+const updated=new Date(DATA.updated);
+$('title').innerHTML=esc(DATA.league||'League')+'<br>League hub';
+document.title=(DATA.league||'League')+' hub';
+$('sub').textContent=`Week ${DATA.week}, updated ${updated.toLocaleString([], {weekday:'short',month:'short',day:'numeric',hour:'numeric',minute:'2-digit'})}. Power ratings, playoff odds, team profiles, luck and lineup grades.`;
+$('avg').textContent=DATA.avg.toFixed(1);
+
+// rankings
+const maxP=Math.max(...T.map(t=>Math.abs(t.power)))||1;
+$('board').innerHTML=T.map(t=>{
+  const b=divBar(t.power,maxP);
+  const pos=Object.entries(t.pos).map(([k,v])=>`<div>${k}<span class="${v>0.2?'up':v<-0.2?'dn':''}">${sg(v)}</span></div>`).join('');
+  const core=t.core.map(c=>`<li><em>${c[1]}</em><span>${esc(c[0])}</span><span>${c[2].toFixed(1)}</span></li>`).join('');
+  return `<details class="row"><summary>
+    <span class="rk">${t.rank}</span>
+    <span><span class="tn">${esc(t.name)}</span><br><span class="ow">${esc(t.owner)}, ${t.w}–${t.l}${t.t?'–'+t.t:''}</span></span>
+    <span class="rt" style="color:${b.c}">${sg(t.power)}<small>power</small></span>
+    ${b.html}
+    <span class="stats"><span>ROS <strong>${t.ros.toFixed(1)}</strong>/wk</span><span>Full strength <strong>${(t.peak??t.ros).toFixed(1)}</strong></span><span>Exp. wins <strong>${t.xw.toFixed(1)}</strong></span><span>Playoffs <strong>${t.po}%</strong></span><span>Title <strong style="color:var(--gold)">${t.champ<1?'<1':t.champ.toFixed(0)}%</strong></span></span>
+  </summary><div class="detail">
+    ${(t.out&&t.out.length)?`<h4>Out or limited right now</h4><div class="chips" style="padding:0 0 4px">${t.out.map(o=>`<span class="chip">${esc(o[0])} · ${esc(o[1])}${o[2]>0?` · ${Math.round(o[2]*100)}%`:''}</span>`).join('')}</div>`:''}
+    <h4>Positional edge vs. league average (pts/wk)</h4><div class="pos">${pos}</div>
+    ${core?`<h4>Projected week ${DATA.lineup_week} lineup</h4><ul class="core">${core}</ul>`:''}
+  </div></details>`}).join('');
+
+// team profiles, grouped by where each franchise stands
+(function(){
+  const el=$('profileList'); if(!el) return;
+  const GROUPS=[
+    ['Contending','Good enough to win it this year.'],
+    ['In the hunt','One move either way decides the season.'],
+    ['Building','Young, not ready, and pointed the right direction.'],
+    ['Purgatory','Stuck between the two things that work.'],
+    ['Should be tanking','No path worth chasing. Play for next year.']
+  ];
+  const card=t=>{
+    const assets=(t.assets||[]).map(a=>`<span class="chip">${esc(a[0])} · ${esc(a[1])}${a[2]?' '+a[2]:''}</span>`).join('');
+    const picks=(t.picks||[]).map(p=>`<span class="chip">${esc(p)}</span>`).join('');
+    const showPicks=picks && (t.po<45 || t.firsts>=3);
+    return `<article class="card">
+      <h4>${esc(t.name)}</h4>
+      <div class="who">${esc(t.owner)} · ${t.w}–${t.l} · #${t.rank} power</div>
+      <div class="kpi">
+        <div><small>Projected</small><b>${t.proj_w}–${t.proj_l}</b></div>
+        <div><small>Playoffs</small><b>${t.po}%</b></div>
+        <div><small>Title</small><b style="color:var(--gold)">${t.champ<1?'<1%':t.champ.toFixed(0)+'%'}</b></div>
+        <div><small>Core age</small><b>${t.core_age??'—'}</b></div>
+      </div>
+      ${assets?`<p class="sub">Top assets</p><div class="chips" style="padding:0">${assets}</div>`:''}
+      ${showPicks?`<p class="sub" style="margin-top:14px">Draft capital</p><div class="chips" style="padding:0">${picks}</div>`:''}
+      <p class="read">${esc(t.blurb||'')}</p>
+    </article>`;
+  };
+  el.innerHTML=GROUPS.map(([g,sub])=>{
+    const rows=T.filter(t=>t.status===g);
+    if(!rows.length) return '';
+    return `<div class="group"><h3>${esc(g)}</h3><p>${esc(sub)}</p></div>${rows.map(card).join('')}`;
+  }).join('');
+})();
+
+// bracket
+(function(){
+  const s=DATA.seeds, pw=DATA.pw;
+  if(!s||s.length<6){$('br').innerHTML='<div class="empty">Bracket view supports 6-team playoffs.</div>';return}
+  const slot=(rid,seed,p)=>`<div class="slot"><span class="sd">${seed}</span><span class="nm">${esc(byId[rid].name)}</span><span class="pc">${p}%</span></div>`;
+  const game=(a,sa,b,sb,w)=>{const p=Math.round(wpc(pw[a][w],pw[b][w])*100);return {html:`<div class="game">${slot(a,sa,p)}${slot(b,sb,100-p)}</div>`,win:p>=50?[a,sa]:[b,sb]}};
+  const g45=game(s[3],4,s[4],5,15), g36=game(s[2],3,s[5],6,15);
+  const sf1=game(s[0],1,g45.win[0],g45.win[1],16), sf2=game(s[1],2,g36.win[0],g36.win[1],16);
+  const fin=game(sf1.win[0],sf1.win[1],sf2.win[0],sf2.win[1],17);
+  $('br').innerHTML=`<div class="round"><h4>Round 1, week 15</h4>${g45.html}${g36.html}</div>
+    <div class="round"><h4>Semifinals, week 16</h4>${sf1.html}${sf2.html}</div>
+    <div class="round"><h4>Final, week 17</h4>${fin.html}</div>`;
+  const ch=[...T].sort((a,b)=>b.champ-a.champ), mx=ch[0].champ||1;
+  $('champ').innerHTML=ch.map(t=>`<div class="lrow"><span class="t"><b>${esc(t.name)}</b><span>Final ${t.final}%, playoffs ${t.po}%</span></span><span class="bar fill"><i style="left:0;width:${t.champ/mx*100}%;background:var(--gold)"></i></span><span class="v">${t.champ<1?'<1':t.champ.toFixed(0)}%</span></div>`).join('');
+  const bySeed=[...T].sort((a,b)=>a.exp_seed-b.exp_seed), n=T.length;
+  let h='<thead><tr><th>Team</th>'+[...Array(n)].map((_,i)=>`<th>${i+1}</th>`).join('')+'</tr></thead><tbody>';
+  bySeed.forEach(t=>{h+=`<tr><td title="${esc(t.name)}">${esc(t.name)}</td>`+t.seeds.map((v,i)=>{const a=Math.min(v/60,1)*80;const base=i<DATA.playoff_teams?'var(--pos)':'var(--neg)';return `<td style="background:color-mix(in srgb, ${base} ${a.toFixed(0)}%, transparent);${a>45?'color:var(--selink)':''}">${v>=1?Math.round(v):v>0?'·':''}</td>`}).join('')+'</tr>'});
+  $('heat').innerHTML=h+'</tbody>';
+})();
+
+// luck
+(function(){
+  if(!DATA.done.length){$('luckList').innerHTML='<div class="empty">Luck shows up after week 1 is scored.</div>';return}
+  const L=[...T].sort((a,b)=>b.luck-a.luck), mx=Math.max(...T.map(t=>Math.abs(t.luck)))||1;
+  $('luckList').innerHTML=L.map(t=>{const b=divBar(t.luck,mx);return `<div class="lrow"><span class="t"><b>${esc(t.name)}</b><span>${t.w}–${t.l} actual, ${t.apw}–${t.apl} all-play, PF ${t.pf.toFixed(1)}, PA ${t.pa.toFixed(1)}</span></span>${b.html}<span class="v" style="color:${b.c}">${sg(t.luck,2)}</span></div>`}).join('');
+})();
+
+// efficiency
+(function(){
+  if(!DATA.done.length){$('effList').innerHTML='<div class="empty">Lineup grades show up after week 1 is scored.</div>';return}
+  const E=[...T].sort((a,b)=>b.eff-a.eff), worst=[...T].sort((a,b)=>b.left-a.left)[0], bb=[...T].filter(t=>t.bench).sort((a,b)=>b.bench[1]-a.bench[1])[0];
+  $('awards').innerHTML=`<div><small>Best lineup management</small><b>${esc(E[0].name)}</b><span>${E[0].eff.toFixed(1)}%</span></div>
+   <div><small>Most left on the bench</small><b>${esc(worst.name)}</b><span>${worst.left.toFixed(1)} pts</span></div>`+
+   (bb?`<div><small>Biggest bench game</small><b>${esc(bb.bench[0])}, ${esc(bb.name)}</b><span>${bb.bench[1].toFixed(1)} pts, wk ${bb.bench[2]}</span></div>`:'');
+  $('effList').innerHTML=E.map(t=>{const c=t.eff>=90?'var(--pos)':t.eff>=80?'var(--gold)':'var(--neg)';
+    return `<div class="lrow"><span class="t"><b>${esc(t.name)}</b><span>${t.act.toFixed(1)} of ${t.opt.toFixed(1)} possible, ${t.left.toFixed(1)} left on bench</span></span><span class="bar fill"><i style="left:0;width:${Math.max(0,(t.eff-50)*2)}%;background:${c}"></i></span><span class="v" style="color:${c}">${t.eff.toFixed(0)}%</span></div>`}).join('');
+})();
+
+// schedule
+(function(){
+  const S=[...T].sort((a,b)=>a.sosr-b.sosr), mx=Math.max(...T.map(t=>Math.abs(t.sosd)))||1;
+  $('sos').innerHTML=S.map(t=>{const b=divBar(t.sosd,mx,false);return `<div class="lrow"><span class="t"><b>${t.sosr}. ${esc(t.name)}</b><span>Opponents average ${t.sos.toFixed(1)} at full strength${t.sos_live!=null?`, ${t.sos_live.toFixed(1)} as scheduled`:''}</span></span>${b.html}<span class="v" style="color:${b.c}">${sg(t.sosd)}</span></div>`}).join('');
+  const pick=$('pickT'), rows=$('rows');
+  T.forEach(t=>pick.insertAdjacentHTML('beforeend',`<option value="${t.rid}">${esc(t.name)}</option>`));
+  function render(rid){let h='';Object.keys(DATA.weekly[rid]||{}).map(Number).sort((a,b)=>a-b).forEach(w=>{const o=DATA.sched[w][rid],me=DATA.weekly[rid][w],op=DATA.weekly[o][w];const pc=Math.round(wpc(me,op)*100),c=pc>=50?'var(--pos)':'var(--neg)';
+    h+=`<tr><td>${w}</td><td>${esc(byId[o].name)}</td><td class="num">${me.toFixed(1)}</td><td class="num">${op.toFixed(1)}</td><td class="num"><span class="wp"><i style="--w:${pc}%;--c:${c}"></i>${pc}%</span></td></tr>`});rows.innerHTML=h||'<tr><td colspan="5">Regular season is over.</td></tr>'}
+  pick.addEventListener('change',e=>render(e.target.value)); render(T[0].rid);
+})();
+
+// team profiles, grouped by where each franchise stands
+(function(){
+  const el=$('profileList'); if(!el) return;
+  const GROUPS=[
+    ['Contending','Good enough to win it this year.'],
+    ['In the hunt','One move either way decides the season.'],
+    ['Building','Young, not ready, and pointed the right direction.'],
+    ['Purgatory','Stuck between the two things that work.'],
+    ['Should be tanking','No path worth chasing. Play for next year.']
+  ];
+  const card=t=>{
+    const assets=(t.assets||[]).map(a=>`<span class="chip">${esc(a[0])} · ${esc(a[1])}${a[2]?' '+a[2]:''}</span>`).join('');
+    const picks=(t.picks||[]).map(p=>`<span class="chip">${esc(p)}</span>`).join('');
+    const showPicks=picks && (t.po<45 || t.firsts>=3);
+    return `<article class="card">
+      <h4>${esc(t.name)}</h4>
+      <div class="who">${esc(t.owner)} · ${t.w}–${t.l} · #${t.rank} power</div>
+      <div class="kpi">
+        <div><small>Projected</small><b>${t.proj_w}–${t.proj_l}</b></div>
+        <div><small>Playoffs</small><b>${t.po}%</b></div>
+        <div><small>Title</small><b style="color:var(--gold)">${t.champ<1?'<1%':t.champ.toFixed(0)+'%'}</b></div>
+        <div><small>Core age</small><b>${t.core_age??'—'}</b></div>
+      </div>
+      ${assets?`<p class="sub">Top assets</p><div class="chips" style="padding:0">${assets}</div>`:''}
+      ${showPicks?`<p class="sub" style="margin-top:14px">Draft capital</p><div class="chips" style="padding:0">${picks}</div>`:''}
+      <p class="read">${esc(t.blurb||'')}</p>
+    </article>`;
+  };
+  el.innerHTML=GROUPS.map(([g,sub])=>{
+    const rows=T.filter(t=>t.status===g);
+    if(!rows.length) return '';
+    return `<div class="group"><h3>${esc(g)}</h3><p>${esc(sub)}</p></div>${rows.map(card).join('')}`;
+  }).join('');
+})();
+
+// bracket
+(function(){
+  const s=DATA.seeds, pw=DATA.pw;
+  if(!s||s.length<6){$('br').innerHTML='<div class="empty">Bracket view supports 6-team playoffs.</div>';return}
+  const slot=(rid,seed,p)=>`<div class="slot"><span class="sd">${seed}</span><span class="nm">${esc(byId[rid].name)}</span><span class="pc">${p}%</span></div>`;
+  const game=(a,sa,b,sb,w)=>{const p=Math.round(wpc(pw[a][w],pw[b][w])*100);return {html:`<div class="game">${slot(a,sa,p)}${slot(b,sb,100-p)}</div>`,win:p>=50?[a,sa]:[b,sb]}};
+  const g45=game(s[3],4,s[4],5,15), g36=game(s[2],3,s[5],6,15);
+  const sf1=game(s[0],1,g45.win[0],g45.win[1],16), sf2=game(s[1],2,g36.win[0],g36.win[1],16);
+  const fin=game(sf1.win[0],sf1.win[1],sf2.win[0],sf2.win[1],17);
+  $('br').innerHTML=`<div class="round"><h4>Round 1, week 15</h4>${g45.html}${g36.html}</div>
+    <div class="round"><h4>Semifinals, week 16</h4>${sf1.html}${sf2.html}</div>
+    <div class="round"><h4>Final, week 17</h4>${fin.html}</div>`;
+  const ch=[...T].sort((a,b)=>b.champ-a.champ), mx=ch[0].champ||1;
+  $('champ').innerHTML=ch.map(t=>`<div class="lrow"><span class="t"><b>${esc(t.name)}</b><span>Final ${t.final}%, playoffs ${t.po}%</span></span><span class="bar fill"><i style="left:0;width:${t.champ/mx*100}%;background:var(--gold)"></i></span><span class="v">${t.champ<1?'<1':t.champ.toFixed(0)}%</span></div>`).join('');
+  const bySeed=[...T].sort((a,b)=>a.exp_seed-b.exp_seed), n=T.length;
+  let h='<thead><tr><th>Team</th>'+[...Array(n)].map((_,i)=>`<th>${i+1}</th>`).join('')+'</tr></thead><tbody>';
+  bySeed.forEach(t=>{h+=`<tr><td title="${esc(t.name)}">${esc(t.name)}</td>`+t.seeds.map((v,i)=>{const a=Math.min(v/60,1)*80;const base=i<DATA.playoff_teams?'var(--pos)':'var(--neg)';return `<td style="background:color-mix(in srgb, ${base} ${a.toFixed(0)}%, transparent);${a>45?'color:var(--selink)':''}">${v>=1?Math.round(v):v>0?'·':''}</td>`}).join('')+'</tr>'});
+  $('heat').innerHTML=h+'</tbody>';
+})();
+
+// luck
+(function(){
+  if(!DATA.done.length){$('luckList').innerHTML='<div class="empty">Luck shows up after week 1 is scored.</div>';return}
+  const L=[...T].sort((a,b)=>b.luck-a.luck), mx=Math.max(...T.map(t=>Math.abs(t.luck)))||1;
+  $('luckList').innerHTML=L.map(t=>{const b=divBar(t.luck,mx);return `<div class="lrow"><span class="t"><b>${esc(t.name)}</b><span>${t.w}–${t.l} actual, ${t.apw}–${t.apl} all-play, PF ${t.pf.toFixed(1)}, PA ${t.pa.toFixed(1)}</span></span>${b.html}<span class="v" style="color:${b.c}">${sg(t.luck,2)}</span></div>`}).join('');
+})();
+
+// efficiency
+(function(){
+  if(!DATA.done.length){$('effList').innerHTML='<div class="empty">Lineup grades show up after week 1 is scored.</div>';return}
+  const E=[...T].sort((a,b)=>b.eff-a.eff), worst=[...T].sort((a,b)=>b.left-a.left)[0], bb=[...T].filter(t=>t.bench).sort((a,b)=>b.bench[1]-a.bench[1])[0];
+  $('awards').innerHTML=`<div><small>Best lineup management</small><b>${esc(E[0].name)}</b><span>${E[0].eff.toFixed(1)}%</span></div>
+   <div><small>Most left on the bench</small><b>${esc(worst.name)}</b><span>${worst.left.toFixed(1)} pts</span></div>`+
+   (bb?`<div><small>Biggest bench game</small><b>${esc(bb.bench[0])}, ${esc(bb.name)}</b><span>${bb.bench[1].toFixed(1)} pts, wk ${bb.bench[2]}</span></div>`:'');
+  $('effList').innerHTML=E.map(t=>{const c=t.eff>=90?'var(--pos)':t.eff>=80?'var(--gold)':'var(--neg)';
+    return `<div class="lrow"><span class="t"><b>${esc(t.name)}</b><span>${t.act.toFixed(1)} of ${t.opt.toFixed(1)} possible, ${t.left.toFixed(1)} left on bench</span></span><span class="bar fill"><i style="left:0;width:${Math.max(0,(t.eff-50)*2)}%;background:${c}"></i></span><span class="v" style="color:${c}">${t.eff.toFixed(0)}%</span></div>`}).join('');
+})();
+
+// schedule
+(function(){
+  const S=[...T].sort((a,b)=>a.sosr-b.sosr), mx=Math.max(...T.map(t=>Math.abs(t.sosd)))||1;
+  $('sos').innerHTML=S.map(t=>{const b=divBar(t.sosd,mx,false);return `<div class="lrow"><span class="t"><b>${t.sosr}. ${esc(t.name)}</b><span>Opponents average ${t.sos.toFixed(1)} at full strength${t.sos_live!=null?`, ${t.sos_live.toFixed(1)} as scheduled`:''}</span></span>${b.html}<span class="v" style="color:${b.c}">${sg(t.sosd)}</span></div>`}).join('');
+  const pick=$('pickT'), rows=$('rows');
+  T.forEach(t=>pick.insertAdjacentHTML('beforeend',`<option value="${t.rid}">${esc(t.name)}</option>`));
+  function render(rid){let h='';Object.keys(DATA.weekly[rid]||{}).map(Number).sort((a,b)=>a-b).forEach(w=>{const o=DATA.sched[w][rid],me=DATA.weekly[rid][w],op=DATA.weekly[o][w];const pc=Math.round(wpc(me,op)*100),c=pc>=50?'var(--pos)':'var(--neg)';
+    h+=`<tr><td>${w}</td><td>${esc(byId[o].name)}</td><td class="num">${me.toFixed(1)}</td><td class="num">${op.toFixed(1)}</td><td class="num"><span class="wp"><i style="--w:${pc}%;--c:${c}"></i>${pc}%</span></td></tr>`});rows.innerHTML=h||'<tr><td colspan="5">Regular season is over.</td></tr>'}
+  pick.addEventListener('change',e=>render(e.target.value)); render(T[0].rid);
+})();
+
+}
+
+
+</script>
+</body>
+</html>
