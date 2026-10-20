@@ -98,5 +98,55 @@
    "total": 260.0,
    "favwp": 87
   }
+ ],
+ "7": [
+  {
+   "mid": 3,
+   "fav": 11,
+   "dog": 6,
+   "spread": 11.0,
+   "total": 212.0,
+   "favwp": 60
+  },
+  {
+   "mid": 6,
+   "fav": 1,
+   "dog": 3,
+   "spread": 15.0,
+   "total": 249.5,
+   "favwp": 64
+  },
+  {
+   "mid": 2,
+   "fav": 4,
+   "dog": 2,
+   "spread": 15.5,
+   "total": 223.5,
+   "favwp": 64
+  },
+  {
+   "mid": 1,
+   "fav": 5,
+   "dog": 10,
+   "spread": 43.5,
+   "total": 235.0,
+   "favwp": 85
+  },
+  {
+   "mid": 4,
+   "fav": 7,
+   "dog": 12,
+   "spread": 53.5,
+   "total": 242.5,
+   "favwp": 90
+  },
+  {
+   "mid": 5,
+   "fav": 8,
+   "dog": 9,
+   "spread": 89.0,
+   "total": 221.5,
+   "favwp": 98
+  }
  ]
 }
